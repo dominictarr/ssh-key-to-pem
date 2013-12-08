@@ -1,6 +1,6 @@
 // Copyright 2012 Joyent, Inc.  All rights reserved.
 
-var assert = require('assert-plus');
+var assert = require('assert');
 var crypto = require('crypto');
 
 var asn1 = require('asn1');
@@ -199,7 +199,7 @@ module.exports = {
    * @throws {Error} on invalid ssh key formatted data.
    */
   sshKeyToPEM: function sshKeyToPEM(key) {
-    assert.string(key, 'ssh_key');
+    assert.equal('string', typeof key, 'typeof ssh_key');
 
     /* JSSTYLED */
     if (/^ssh-rsa.*/.test(key))
@@ -222,7 +222,7 @@ module.exports = {
    * @throws {Error} if what you passed doesn't look like an ssh public key.
    */
   fingerprint: function fingerprint(key) {
-    assert.string(key, 'ssh_key');
+    assert.equal('string', typeof key, 'typeof ssh_key');
 
     var pieces = key.split(' ');
     if (!pieces || !pieces.length || pieces.length < 2)

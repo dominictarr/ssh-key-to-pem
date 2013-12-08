@@ -4,8 +4,9 @@ var assert = require('assert');
 var crypto = require('crypto');
 
 var asn1 = require('asn1');
+var util = require('util');
 var ctype = require('ctype');
-
+var Transform = require('stream').Transform;
 
 
 ///--- Helpers
@@ -62,6 +63,7 @@ function rsaToPEM(key) {
     tmp = readNext(buffer, offset);
     modulus = tmp.data;
   } catch (e) {
+    console.log(e)
     throw new Error('Invalid ssh key: ' + key);
   }
 
@@ -212,6 +214,27 @@ function dsaToPEM(key) {
 
 module.exports = sshKeyToPEM
 sshKeyToPEM.sshKeyToPEM = sshKeyToPEM
+
+
+util.inherits(sshKeyToPEM_Transoform, Transform);
+function sshKeyToPEM_Transoform() {
+  Transform.call(this);
+}
+
+sshKeyToPEM_Transoform.prototype._transform = function(chunk, encoding, done) {
+  var data = chunk.toString();
+  var type = data.slice(0, 7);
+  switch (type) {
+  case 'ssh-rsa': this.push(rsaToPEM(data)); break;
+  case 'ssh-dsa':
+  case 'ssh-dss': this.push(dsaToPEM(data)); break;
+  }
+  done();
+}
+
+sshKeyToPEM.Transform = sshKeyToPEM_Transoform;
+
+
 
 
   /**

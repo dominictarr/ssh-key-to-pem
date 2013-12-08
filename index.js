@@ -185,8 +185,6 @@ function dsaToPEM(key) {
 
 ///--- API
 
-module.exports = {
-
   /**
    * Converts an OpenSSH public key (rsa only) to a PKCS#8 PEM file.
    *
@@ -198,7 +196,7 @@ module.exports = {
    * @throws {TypeError} on bad input.
    * @throws {Error} on invalid ssh key formatted data.
    */
-  sshKeyToPEM: function sshKeyToPEM(key) {
+  function sshKeyToPEM(key) {
     assert.equal('string', typeof key, 'typeof ssh_key');
 
     /* JSSTYLED */
@@ -210,7 +208,10 @@ module.exports = {
       return dsaToPEM(key);
 
     throw new Error('Only RSA and DSA public keys are allowed');
-  },
+  }
+
+module.exports = sshKeyToPEM
+sshKeyToPEM.sshKeyToPEM = sshKeyToPEM
 
 
   /**
@@ -221,7 +222,7 @@ module.exports = {
    * @throws {TypeError} on bad input.
    * @throws {Error} if what you passed doesn't look like an ssh public key.
    */
-  fingerprint: function fingerprint(key) {
+  function fingerprint(key) {
     assert.equal('string', typeof key, 'typeof ssh_key');
 
     var pieces = key.split(' ');
@@ -245,5 +246,5 @@ module.exports = {
     return fp;
   }
 
+sshKeyToPEM.fingerprint = fingerprint
 
-};

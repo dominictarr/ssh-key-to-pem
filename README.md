@@ -1,20 +1,14 @@
-# node-http-signature
+# ssh-key-to-pem
 
-node-http-signature is a node.js library that has client and server components
-for Joyent's [HTTP Signature Scheme](http_signing.md).
+convert an ssh key to PEM format.
 
 ## Usage
 
-Note the example below signs a request with the same key/cert used to start an
-HTTP server. This is almost certainly not what you actually want, but is just
-used to illustrate the API calls; you will need to provide your own key
-management in addition to this library.
+read a ssh key and convert it to PEM format.
 
-### Client
 
     var fs = require('fs');
-    var https = require('https');
-    var httpSignature = require('http-signature');
+    var sshKeyToPEM = require('ssh-key-to-pem');
 
     var key = fs.readFileSync('./key.pem', 'ascii');
 
@@ -40,36 +34,11 @@ management in addition to this library.
 
     req.end();
 
-### Server
-
-    var fs = require('fs');
-    var https = require('https');
-    var httpSignature = require('http-signature');
-
-    var options = {
-      key: fs.readFileSync('./key.pem'),
-      cert: fs.readFileSync('./cert.pem')
-    };
-
-    https.createServer(options, function (req, res) {
-      var rc = 200;
-      var parsed = httpSignature.parseRequest(req);
-      var pub = fs.readFileSync(parsed.keyId, 'ascii');
-      if (!httpSignature.verifySignature(parsed, pub))
-        rc = 401;
-
-      res.writeHead(rc);
-      res.end();
-    }).listen(8443);
-
 ## Installation
 
-    npm install http-signature
+    npm install ssh-key-to-pem
 
 ## License
 
 MIT.
 
-## Bugs
-
-See <https://github.com/joyent/node-http-signature/issues>.

@@ -1,9 +1,9 @@
 // Copyright 2011 Joyent, Inc.  All rights reserved.
 
-var test = require('tap').test;
+var test = require('tape');
 
-var sshKeyFingerprint = require('../lib/index').sshKeyFingerprint;
-var sshKeyToPEM = require('../lib/index').sshKeyToPEM;
+var sshKeyFingerprint = require('../').fingerprint;
+var sshKeyToPEM = require('../').sshKeyToPEM;
 
 
 

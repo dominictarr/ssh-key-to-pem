@@ -2,6 +2,8 @@
 
 convert an ssh key to PEM format.
 
+deprecated! use [sshpk](https://www.npmjs.com/package/sshpk) instead!
+
 ## Usage
 
 read a ssh key and convert it to PEM format.

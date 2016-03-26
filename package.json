@@ -2,7 +2,7 @@
   "author": "Joyent, Inc",
   "name": "ssh-key-to-pem",
   "description": "Convert an ssh key to PEM format",
-  "version": "0.11.0",
+  "version": "0.11.1",
   "repository": {
     "type": "git",
     "url": "git://github.com/dominictarr/ssh-key-to-pem.git"

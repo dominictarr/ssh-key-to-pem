@@ -10,6 +10,21 @@ var ctype = require('ctype');
 
 ///--- Helpers
 
+// https://nodejs.org/fr/docs/guides/buffer-constructor-deprecation/
+function createBuffer(arg, encoding) {
+  if(typeof arg == 'number'){
+    if (Buffer.alloc) {
+      return Buffer.alloc(arg);
+    }
+    return (new Buffer(arg)).fill(0);
+  }
+  if (Buffer.from && Buffer.from !== Uint8Array.from) {
+    return Buffer.from(arg, encoding);
+  } else {
+    return new Buffer(arg, encoding);
+  }
+}
+
 function readNext(buffer, offset) {
   var len = ctype.ruint32(buffer, 'big', offset);
   offset += 4;
@@ -46,7 +61,7 @@ function rsaToPEM(key) {
   var tmp;
 
   try {
-    buffer = new Buffer(key.split(' ')[1], 'base64');
+    buffer = createBuffer(key.split(' ')[1], 'base64');
 
     tmp = readNext(buffer, offset);
     type = tmp.data.toString();
@@ -117,7 +132,7 @@ function dsaToPEM(key) {
   var y;
 
   try {
-    buffer = new Buffer(key.split(' ')[1], 'base64');
+    buffer = createBuffer(key.split(' ')[1], 'base64');
 
     tmp = readNext(buffer, offset);
     type = tmp.data.toString();
@@ -224,7 +239,7 @@ function pemToRsaSSHKey(pem, comment) {
   // chop off the BEGIN PUBLIC KEY and END PUBLIC KEY portion
   var cleaned = pem.split('\n').slice(1, -2).join('');
 
-  var buf = new Buffer(cleaned, 'base64');
+  var buf = createBuffer(cleaned, 'base64');
 
   var der = new asn1.BerReader(buf);
 
@@ -256,8 +271,8 @@ function pemToRsaSSHKey(pem, comment) {
   der._offset += der.length;
 
   // now, make the key
-  var type = new Buffer('ssh-rsa');
-  var buffer = new Buffer(4 + type.length + 4 + modulus.length + 4 + exponent.length);
+  var type = createBuffer('ssh-rsa');
+  var buffer = createBuffer(4 + type.length + 4 + modulus.length + 4 + exponent.length);
   var i = 0;
   buffer.writeUInt32BE(type.length, i);     i += 4;
   type.copy(buffer, i);                     i += type.length;
@@ -288,7 +303,7 @@ sshKeyToPEM.pemToRsaSSHKey = pemToRsaSSHKey;
     if (!pieces || !pieces.length || pieces.length < 2)
       throw new Error('invalid ssh key');
 
-    var data = new Buffer(pieces[1], 'base64');
+    var data = createBuffer(pieces[1], 'base64');
 
     var hash = crypto.createHash('md5');
     hash.update(data);

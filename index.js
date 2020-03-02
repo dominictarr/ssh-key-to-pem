@@ -16,7 +16,9 @@ function createBuffer(arg, encoding) {
     if (Buffer.alloc) {
       return Buffer.alloc(arg);
     }
-    return (new Buffer(arg)).fill(0);
+    var buf = new Buffer(arg);
+    buf.fill(0);
+    return buf;
   }
   if (Buffer.from && Buffer.from !== Uint8Array.from) {
     return Buffer.from(arg, encoding);
